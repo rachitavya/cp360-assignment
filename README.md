@@ -72,23 +72,3 @@ Authentication and AES encryption is implemented.
 | PATCH  | `/orders/{id}/`       | Partially update order                          |
 | DELETE | `/orders/{id}/`       | Delete order by ID                              |
 
-
-##  TODO/Still lacks
-
--  **Integrated testing with frontend**  
-  Some APIs return incorrect data when triggered from the frontend. Need thorough testing and fixes.
-
--  **Dockerize the system using Docker Compose**  
-  services should include:
-    - Django server  
-    - Celery worker  
-    - Redis server  
-
--  **Add more detailed documentation**  
-  Including API examples, expected responses, and error codes.
-
--  **video upload progress bar**  
-
----
-  
-**Note:** For frontend part, I've taken assistance from AI.
