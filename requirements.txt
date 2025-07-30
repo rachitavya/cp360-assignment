@@ -3,3 +3,12 @@ djangorestframework
 djangorestframework-simplejwt
 django-storages
 boto3
+celery
+redis
+openpyxl
+requests
+PyJWT
+python-dateutil
+pytz
+tzdata
+sqlparse
