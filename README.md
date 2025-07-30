@@ -3,7 +3,7 @@
 
 ### 1. The project is LIVE: http://3.108.254.72:8000/
 
-### 2. Demo [video]([url](https://drive.google.com/file/d/1c_BSKRVfG8Gzxk8oesbu4kIt8ElDbdi_/view?usp=sharing)) briefly explaining the project
+### 2. Demo [video](https://drive.google.com/file/d/1c_BSKRVfG8Gzxk8oesbu4kIt8ElDbdi_/view?usp=sharing) briefly explaining the project
 
 ### 3. A few highlights/features of the project
 
