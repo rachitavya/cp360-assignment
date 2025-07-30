@@ -12,3 +12,5 @@ python-dateutil
 pytz
 tzdata
 sqlparse
+python-dotenv
+cryptography
