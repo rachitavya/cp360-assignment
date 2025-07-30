@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP360 Frontend</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="aes.js"></script>
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <div id="user-bar">
+        <span id="user-info">Not logged in</span>
+        <button id="logout-btn" style="display:none;">Logout</button>
+    </div>
+    <div class="tabs">
+        <button class="tab-btn" data-tab="register">Register</button>
+        <button class="tab-btn" data-tab="login">Login</button>
+        <button class="tab-btn" data-tab="activate">Activate</button>
+        <button class="tab-btn" data-tab="dummy">Generate Dummy Products</button>
+        <button class="tab-btn" data-tab="products">Products</button>
+    </div>
+    <div class="tab-content" id="register">
+        <h2>Register</h2>
+        <form id="register-form">
+            <input type="email" id="reg-email" placeholder="Email" required><br>
+            <input type="password" id="reg-password" placeholder="Password" required><br>
+            <select id="reg-role">
+                <option value="END_USER">End User</option>
+                <option value="STAFF">Staff</option>
+                <option value="ADMIN">Admin</option>
+            </select><br>
+            <button type="submit">Register</button>
+        </form>
+        <div id="register-result"></div>
+    </div>
+    <div class="tab-content" id="login">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required><br>
+            <input type="password" id="login-password" placeholder="Password" required><br>
+            <button type="submit">Login</button>
+        </form>
+        <div id="login-result"></div>
+    </div>
+    <div class="tab-content" id="activate">
+        <h2>Activate Account</h2>
+        <form id="activate-form">
+            <input type="text" id="activate-uid" placeholder="UID from link" required><br>
+            <input type="text" id="activate-token" placeholder="Token from link" required><br>
+            <button type="submit">Activate</button>
+        </form>
+        <div id="activate-result"></div>
+    </div>
+    <div class="tab-content" id="dummy">
+        <h2>Generate Dummy Products</h2>
+        <form id="dummy-form">
+            <input type="number" id="dummy-count" min="1" placeholder="Number of products" required><br>
+            <button type="submit">Generate</button>
+        </form>
+        <div id="dummy-result"></div>
+    </div>
+    <div class="tab-content" id="products">
+        <h2>Products</h2>
+        <div id="products-user-msg"></div>
+        <button id="refresh-products">Refresh List</button>
+        <table id="products-table">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Description</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <h3>Add Product</h3>
+        <form id="add-product-form">
+            <input type="text" id="prod-name" placeholder="Name" required><br>
+            <input type="text" id="prod-desc" placeholder="Description"><br>
+            <input type="number" id="prod-category" placeholder="Category ID" required><br>
+            <button type="submit">Add Product</button>
+        </form>
+        <div id="add-product-result"></div>
+    </div>
+</body>
+</html> 

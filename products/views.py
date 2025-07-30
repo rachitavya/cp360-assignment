@@ -4,7 +4,7 @@ from rest_framework import status, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductSerializer
-from core.utils import IsAdmin, IsStaff, IsEndUser, IsAdminOrStaff
+from core.utils import IsAdmin, IsStaff, IsEndUser, IsAdminOrStaff, aes_encrypted
 from .tasks import process_product_video
 
 class CategoryListCreateView(APIView):
@@ -15,6 +15,7 @@ class CategoryListCreateView(APIView):
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
 
+    @aes_encrypted
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
@@ -38,6 +39,7 @@ class CategoryDetailView(APIView):
         serializer = CategorySerializer(category)
         return Response(serializer.data)
 
+    @aes_encrypted
     def put(self, request, pk):
         category = self.get_object(pk)
         if not category:
@@ -48,6 +50,7 @@ class CategoryDetailView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @aes_encrypted
     def patch(self, request, pk):
         category = self.get_object(pk)
         if not category:
@@ -58,6 +61,7 @@ class CategoryDetailView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @aes_encrypted
     def delete(self, request, pk):
         category = self.get_object(pk)
         if not category:
@@ -82,12 +86,18 @@ class ProductListCreateView(APIView):
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
+    @aes_encrypted
     def post(self, request):
-        serializer = ProductSerializer(data=request.data)
+        # Save uploaded file to temporary_video, not video
+        data = request.data.copy()
+        video_file = data.pop('video', None)
+        serializer = ProductSerializer(data=data)
         if serializer.is_valid():
-            product = serializer.save(uploaded_by=request.user)
-            if product.video:
-                process_product_video.delay(product.id, product.video.path)
+            product = serializer.save(uploaded_by=request.user, processing_status='UPLOADING')
+            if video_file:
+                product.temporary_video = video_file
+                product.save()
+                process_product_video.delay(product.id)
             return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -111,6 +121,7 @@ class ProductDetailView(APIView):
         serializer = ProductSerializer(product)
         return Response(serializer.data)
 
+    @aes_encrypted
     def put(self, request, pk):
         product = self.get_object(pk, request.user)
         if not product:
@@ -121,6 +132,7 @@ class ProductDetailView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @aes_encrypted
     def patch(self, request, pk):
         product = self.get_object(pk, request.user)
         if not product:
@@ -131,6 +143,7 @@ class ProductDetailView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @aes_encrypted
     def delete(self, request, pk):
         product = self.get_object(pk, request.user)
         if not product:
@@ -140,6 +153,7 @@ class ProductDetailView(APIView):
 
 class ProductApproveView(APIView):
     permission_classes = [IsAdminOrStaff]
+    @aes_encrypted
     def post(self, request, pk):
         try:
             product = Product.objects.get(pk=pk)
@@ -151,6 +165,7 @@ class ProductApproveView(APIView):
 
 class ProductRejectView(APIView):
     permission_classes = [IsAdminOrStaff]
+    @aes_encrypted
     def post(self, request, pk):
         try:
             product = Product.objects.get(pk=pk)

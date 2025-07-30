@@ -9,11 +9,13 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework_simplejwt.tokens import RefreshToken
+from core.utils import aes_encrypted
 
 # Create your views here.
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
+    @aes_encrypted
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -37,6 +39,7 @@ class ActivateView(APIView):
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
+    @aes_encrypted
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -51,6 +54,7 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    @aes_encrypted
     def post(self, request):
         try:
             refresh_token = request.data['refresh']
