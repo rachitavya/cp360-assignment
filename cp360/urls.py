@@ -18,13 +18,18 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import redirect
 import os
+
+def root_redirect(request):
+    return redirect('dashboard')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
     path('api/', include('products.urls')),
     path('api/', include('orders.urls')),
+    path('', include('core.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=os.path.join(settings.BASE_DIR, 'static'))

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - CP360{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Your Products</h2>
+    <p>Welcome, <strong>{{ user.email }}</strong> ({{ user.role }})</p>
+    
+    <a href="{% url 'add_product' %}" class="btn">Add New Product</a>
+    
+    {% if user.role == 'END_USER' %}
+        <div style="margin: 1rem 0;">
+            <strong>Filter by status:</strong>
+            <a href="?status=all" class="btn" style="font-size: 0.9em; padding: 0.25rem 0.5rem;">All</a>
+            <a href="?status=PENDING" class="btn" style="font-size: 0.9em; padding: 0.25rem 0.5rem;">Pending</a>
+            <a href="?status=APPROVED" class="btn" style="font-size: 0.9em; padding: 0.25rem 0.5rem;">Approved</a>
+            <a href="?status=REJECTED" class="btn" style="font-size: 0.9em; padding: 0.25rem 0.5rem;">Rejected</a>
+            <a href="?status=CANCELLED" class="btn" style="font-size: 0.9em; padding: 0.25rem 0.5rem;">Cancelled</a>
+        </div>
+    {% endif %}
+    
+    {% if products %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Processing Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.description|truncatechars:50 }}</td>
+                    <td>{{ product.category.name }}</td>
+                    <td>{{ product.get_status_display }}</td>
+                    <td>{{ product.get_processing_status_display }}</td>
+                    <td>{{ product.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        {% if user.role == 'END_USER' %}
+                            <a href="{% url 'edit_product' product.id %}" class="btn">Edit</a>
+                            <a href="{% url 'delete_product' product.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                        {% elif user.role == 'ADMIN' or user.role == 'STAFF' %}
+                            {% if product.status == 'PENDING' %}
+                                <a href="{% url 'approve_product' product.id %}" class="btn" style="background: #28a745;">Approve</a>
+                                <a href="{% url 'reject_product' product.id %}" class="btn btn-danger">Reject</a>
+                            {% else %}
+                                <span style="color: #666;">{{ product.get_status_display }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>
+            {% if user.role == 'END_USER' %}
+                You haven't created any products yet. <a href="{% url 'add_product' %}">Add your first product</a>
+            {% else %}
+                No products found.
+            {% endif %}
+        </p>
+    {% endif %}
+</div>
+
+{% if user.role == 'END_USER' %}
+<div class="card">
+    <h3>Generate Dummy Products</h3>
+    <form method="post" action="{% url 'generate_dummy' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="count">Number of products to generate:</label>
+            <input type="number" id="count" name="count" min="1" max="50" value="5" required>
+        </div>
+        <button type="submit" class="btn">Generate Dummy Products</button>
+    </form>
+</div>
+{% endif %}
+{% endblock %} 

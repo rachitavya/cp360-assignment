@@ -1,5 +1,10 @@
 from django.db import models
 from users.models import User
+import logging
+from storages.backends.s3boto3 import S3Boto3Storage
+from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 
@@ -25,7 +30,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    video = models.FileField(upload_to='videos/', blank=True, null=True)
+    video = models.FileField(upload_to='videos/', storage=S3Boto3Storage(), blank=True, null=True)
     temporary_video = models.FileField(upload_to='temp_videos/', blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
     processing_status = models.CharField(max_length=12, choices=PROCESSING_STATUS_CHOICES, default='UPLOADING')
@@ -39,5 +44,8 @@ class Product(models.Model):
     @property
     def video_url(self):
         if self.video:
-            return self.video.url
+            url = self.video.url
+            if not url.startswith('http'):
+                url = f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{self.video.name}"
+            return url
         return None

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Orders - CP360{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Orders</h2>
+    
+    {% if user.role == 'END_USER' %}
+        <a href="{% url 'place_order' %}" class="btn">Place New Order</a>
+        <p>Your orders:</p>
+    {% else %}
+        <p>All orders ({{ user.role }} view):</p>
+    {% endif %}
+    
+    {% if orders %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>User</th>
+                    <th>Products</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.user.email }}</td>
+                    <td>
+                        {% for product in order.products.all %}
+                            {{ product.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        ({{ order.products.count }} item{{ order.products.count|pluralize }})
+                    </td>
+                    <td>{{ order.get_status_display }}</td>
+                    <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'order_detail' order.id %}" class="btn">View</a>
+                        {% if user.role == 'ADMIN' or user.role == 'STAFF' %}
+                            <a href="{% url 'edit_order' order.id %}" class="btn">Edit</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>
+            {% if user.role == 'END_USER' %}
+                You haven't placed any orders yet. <a href="{% url 'place_order' %}">Place your first order</a>
+            {% else %}
+                No orders found in the system.
+            {% endif %}
+        </p>
+    {% endif %}
+</div>
+{% endblock %} 

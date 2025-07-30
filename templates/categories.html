@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories - CP360{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Categories</h2>
+    
+    {% if user.role == 'ADMIN' or user.role == 'STAFF' %}
+        <a href="{% url 'add_category' %}" class="btn">Add New Category</a>
+    {% endif %}
+    
+    {% if categories %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Products Count</th>
+                    {% if user.role == 'ADMIN' or user.role == 'STAFF' %}
+                        <th>Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.name }}</td>
+                    <td>{{ category.description|truncatechars:100 }}</td>
+                    <td>{{ category.products.count }}</td>
+                    {% if user.role == 'ADMIN' or user.role == 'STAFF' %}
+                        <td>
+                            <a href="{% url 'edit_category' category.id %}" class="btn">Edit</a>
+                            <a href="{% url 'delete_category' category.id %}" class="btn btn-danger" onclick="return confirm('Are you sure? This will affect all products in this category.')">Delete</a>
+                        </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No categories found. {% if user.role == 'ADMIN' or user.role == 'STAFF' %}<a href="{% url 'add_category' %}">Add the first category</a>{% endif %}</p>
+    {% endif %}
+</div>
+{% endblock %} 

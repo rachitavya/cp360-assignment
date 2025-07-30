@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if product %}Edit{% else %}Add{% endif %} Product - CP360{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>{% if product %}Edit Product{% else %}Add New Product{% endif %}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Product Name:</label>
+            <input type="text" id="name" name="name" value="{{ product.name|default:'' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4">{{ product.description|default:'' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select id="category" name="category" required>
+                <option value="">Select a category</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if product.category.id == cat.id %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="video">Video (optional, max 20MB):</label>
+            <input type="file" id="video" name="video" accept="video/*">
+            {% if product.video %}
+                <p>Current video: <a href="{{ product.video.url }}" target="_blank">{{ product.video.name }}</a></p>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn">{% if product %}Update{% else %}Add{% endif %} Product</button>
+        <a href="{% url 'dashboard' %}" class="btn" style="background: #6c757d;">Cancel</a>
+    </form>
+</div>
+{% endblock %} 

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Place Order - CP360{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Place New Order</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Select Products:</label>
+            <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 1rem;">
+                {% for product in approved_products %}
+                    <div style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; font-weight: normal;">
+                            <input type="checkbox" name="products" value="{{ product.id }}" style="margin-right: 0.5rem;">
+                            <strong>{{ product.name }}</strong> - {{ product.description|truncatechars:50 }}
+                            <span style="margin-left: auto; font-size: 0.9em; color: #666;">({{ product.category.name }})</span>
+                        </label>
+                    </div>
+                {% empty %}
+                    <p>No approved products available for ordering.</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% if approved_products %}
+            <button type="submit" class="btn">Place Order</button>
+        {% endif %}
+        <a href="{% url 'orders' %}" class="btn" style="background: #6c757d;">Cancel</a>
+    </form>
+</div>
+{% endblock %} 

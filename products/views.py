@@ -4,8 +4,9 @@ from rest_framework import status, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductSerializer
-from core.utils import IsAdmin, IsStaff, IsEndUser, IsAdminOrStaff, aes_encrypted
+from core.utils import IsAdmin, IsStaff, IsEndUser, IsAdminOrStaff, aes_encrypted, IsAdminStaffOrEndUser
 from .tasks import process_product_video
+from rest_framework.parsers import JSONParser
 
 class CategoryListCreateView(APIView):
     permission_classes = [IsAdminOrStaff]
@@ -70,12 +71,13 @@ class CategoryDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ProductListCreateView(APIView):
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    permission_classes = [IsAdminStaffOrEndUser]
 
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            return [IsEndUser()]
-        return [permissions.IsAuthenticated()]
+    # def get_permissions(self):
+    #     if self.request.method == 'POST':
+    #         return [AnyOf(IsEndUser, IsAdminOrStaff)()]
+    #     return [permissions.IsAuthenticated()]
 
     def get(self, request):
         user = request.user

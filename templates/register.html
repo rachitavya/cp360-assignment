@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - CP360{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Register</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="role">Role:</label>
+            <select id="role" name="role">
+                <option value="END_USER">End User</option>
+                <option value="STAFF">Staff</option>
+                <option value="ADMIN">Admin</option>
+            </select>
+        </div>
+        <button type="submit" class="btn">Register</button>
+    </form>
+    <p><a href="{% url 'template_login' %}">Already have an account? Login here</a></p>
+</div>
+{% endblock %} 

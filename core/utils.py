@@ -19,6 +19,14 @@ class IsAdminOrStaff(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role in ['ADMIN', 'STAFF']
 
+class IsAdminStaffOrEndUser(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role in ['ADMIN', 'STAFF', 'ENDUSER']
+        )
+
 def aes_encrypted(view_func):
     @wraps(view_func)
     def _wrapped_view(self, request, *args, **kwargs):

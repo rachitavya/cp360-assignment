@@ -2,3 +2,6 @@ venv/
 *__pycache__
 trash/
 db.sqlite3
+temp_videos/
+videos/
+.env
