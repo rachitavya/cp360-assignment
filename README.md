@@ -1,6 +1,21 @@
-Django backend assignment APIs related to a product listing system.
+##### cp360 Assignment - Rachitavya
+---
 
-### API endpoints:
+### 1. The project is LIVE: http://3.108.254.72:8000/
+
+### 2. Demo [video]([url](https://drive.google.com/file/d/1c_BSKRVfG8Gzxk8oesbu4kIt8ElDbdi_/view?usp=sharing)) briefly explaining the project
+
+### 3. A few highlights/features of the project
+
+- Used **celery with redis** for asynt video upload
+- Uploading videos on** AWS S3 bucket** and keeping a url of it at our end
+- **Containerized** all three services: `redis`, `celery` and `django` in docker compose for better flexibility
+- Used **AES encryption** and **JWT** authorization on REST APIs
+- Used django **templating engine** for frontend purposes
+- **Deployd on AWS**
+---
+
+## API endpoints:
 Authentication and AES encryption is implemented.
 
  #### User Authentication & Account
